@@ -640,6 +640,7 @@ function requestObject(url,sN,mode,sP)
                 temp = io.open(sP.."/"..sN,'w')
                 temp:write(respondedText)
                 temp:close()
+                website.close()
                 requesting = false
                 return true
             -- elseif event == "http_failure" then
