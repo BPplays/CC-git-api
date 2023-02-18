@@ -635,8 +635,8 @@ function requestObject(url,sN,mode,sP)
                 if fs.exists(sP) then
                     fs.makeDir(sP)
                 end
-                local respondedText = sourceText.readAll()
-                respondedText = website.readAll()
+                -- local respondedText = sourceText.readAll()
+                local respondedText = website.readAll()
                 temp = io.open(sP.."/"..sN,'w')
                 temp:write(respondedText)
                 temp:close()
