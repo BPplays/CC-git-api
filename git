@@ -677,7 +677,7 @@ end
 
 function compileURL(auth,pro,bran,pat)
     local cacheBuster = ("%x"):format(math.random(0, 2 ^ 30))
-    local baseURL = 'https://raw.github.com/'..auth..'/'..pro..'/'..bran..'/'..pat.."?cb="..cacheBuster
+    local baseURL = 'https://raw.githubusercontent.com/'..auth..'/'..pro..'/'..bran..'/'..pat.."?cb="..cacheBuster
     return baseURL
 end
 
