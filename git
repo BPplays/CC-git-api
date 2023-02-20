@@ -637,7 +637,7 @@ function requestObject(url,sN,mode,sP)
                     fs.makeDir(sP)
                 end
                 local respondedText = sourceText.readAll()
-                local respondedText = website.readAll()
+                -- local respondedText = website.readAll()
                 local temp = io.open(sP.."/"..sN,'w')
                 temp:write(respondedText)
                 temp:close()
