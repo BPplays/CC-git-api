@@ -649,7 +649,7 @@ function requestObject(url,sN,mode,sP)
                 requesting = false
                 return false
             end
-            sleep(0)
+            -- sleep(0)
         end
     elseif mode == 'view' then
         write('Fetching: '..url..'... ')
