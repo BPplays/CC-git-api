@@ -653,7 +653,7 @@ function requestObject(url_down,sN,mode,sP)
                         -- local respondedText = website.readAll()
                         local temp = io.open(sP.."/"..sN,'w')
                         temp:write(respondedText)
-                        -- temp:flush()
+                        temp:flush()
                         temp:close()
                         site_content.close()
                         have_url = true
