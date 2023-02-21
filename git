@@ -629,10 +629,11 @@ function requestObject(url_down,sN,mode,sP)
             [ "User-Agent" ] = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36", -- Overrides the default User-Agent.
         }
         local have_url = false
+        local loops = 1
         -- http.request(url_down)
         local requesting = true
         while have_url == false do
-            if have_url == false then
+            if have_url == false and loops < 3 then
                 http.request({url = url_down, headers = headers_tab})
                 local requesting = true
             else
@@ -669,6 +670,7 @@ function requestObject(url_down,sN,mode,sP)
                     requesting = false
                     return false
                 end
+            loops = loops + 1
             sleep(0)
             end
         end
