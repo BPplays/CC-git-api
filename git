@@ -622,7 +622,7 @@ term.setCursorPos(1,1)
 end
 
 function requestObject(url_down,sN,mode,sP)
-    if not url then error('Incorrect statement!') end
+    if not url_down then error('Incorrect statement!') end
     if not sN and mode == 'get' then error('Check mode!') end
     if mode == 'get' then
         local have_url = false
