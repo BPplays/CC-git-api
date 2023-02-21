@@ -630,9 +630,15 @@ function requestObject(url_down,sN,mode,sP)
         }
         local have_url = false
         -- http.request(url_down)
+        local requesting = true
         while have_url == false do
-            http.request({url = url_down, headers = headers_tab})
-            local requesting = true
+            if have_url == false then
+                http.request({url = url_down, headers = headers_tab})
+                local requesting = true
+            else
+                requesting = false
+                break
+            end
             while requesting do
                 local event, url, site_content = os.pullEvent()
                 
