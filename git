@@ -625,10 +625,13 @@ function requestObject(url_down,sN,mode,sP)
     if not url_down then error('Incorrect statement!') end
     if not sN and mode == 'get' then error('Check mode!') end
     if mode == 'get' then
+        local headers_tab = {
+            [ "User-Agent" ] = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36", -- Overrides the default User-Agent.
+        }
         local have_url = false
         -- http.request(url_down)
         while have_url == false do
-            http.request({ url = url_down, method = "get"})
+            http.request({url = url_down, headers = headers_tab})
             local requesting = true
             while requesting do
                 local event, url, site_content = os.pullEvent()
