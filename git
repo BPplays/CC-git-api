@@ -77,7 +77,7 @@ local function requestObject(url_down,sN,sP)
                 end
             end
             loops = loops + 1
-            if loops >= 2 and loops < 5 then
+            if loops >= 2 then
                 local temp_sleep = loops / 10
                 if temp_sleep > 1 then
                     temp_sleep = 1
