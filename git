@@ -24,6 +24,17 @@ local function save_file(sN,sP,site_content)
 end
 
 
+local function make_request(url_down,headers_tab)
+    math.randomseed((os.epoch("utc")) + math.random(2950886,64684641))
+    local cacheBuster = ("%x"):format(math.random(0, 2 ^ 30))
+    local requested_url = url_down .. "?cb=" .. cacheBuster .. "&timestamp=" .. tostring(os.epoch("utc"))
+    http.request({
+        url = requested_url,
+        headers = headers_tab
+    })
+    return true
+end
+
 local function requestObject(url_down,sN,sP)
     local requested_url = url_down
     local headers_tab = {
@@ -36,14 +47,9 @@ local function requestObject(url_down,sN,sP)
     local requesting = false
     while have_url == false do
         if have_url == false then
-            math.randomseed((os.epoch("utc")) + math.random(2950886,64684641))
-            local cacheBuster = ("%x"):format(math.random(0, 2 ^ 30))
-            requested_url = url_down .. "?cb=" .. cacheBuster .. "&timestamp=" .. tostring(os.epoch("utc"))
-            http.request({
-                url = requested_url,
-                headers = headers_tab
-            })
-            requesting = true
+            if make_request(url_down,headers_tab) then
+                requesting = true
+            end
         end
         if loops > 15 then
             requesting = false
@@ -60,6 +66,7 @@ local function requestObject(url_down,sN,sP)
                         have_url = true
                         requesting = false
                     end
+                    site_content.close()
                 else
                     if loops >= 2 then
                         print(requested_url)
@@ -71,6 +78,7 @@ local function requestObject(url_down,sN,sP)
                 end
             
             elseif event == "http_failure" then
+                site_content.close()
                 -- else
                 event = nil
                 url = nil
