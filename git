@@ -65,11 +65,14 @@ local function requestObject(url_down,sN,sP)
             -- if website then
             if event == "http_success" then
                 if url == requested_url then
-                    if save_file(sN,sP,site_content) then
-                        have_url = true
-                        requesting = false
+                    if site_content ~= nil then
+                        if save_file(sN,sP,site_content) then
+                            have_url = true
+                            requesting = false
+                        end
+                        site_content.close()
+                        site_content = nil
                     end
-                    site_content.close()
                 else
                     if loops >= 2 then
                         print(requested_url)
@@ -81,7 +84,9 @@ local function requestObject(url_down,sN,sP)
                 end
             
             elseif event == "http_failure" then
-                site_content.close()
+                if site_content ~= nil then
+                    site_content.close()
+                end
                 -- else
                 event = nil
                 url = nil
