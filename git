@@ -15,7 +15,7 @@ local function save_file(sN,sP,site_content)
     temp:write(respondedText)
     temp:flush()
     temp:close()
-    site_content.close()
+    -- site_content.close()
     respondedText = nil
     site_content = nil
     -- have_url = true
