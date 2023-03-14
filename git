@@ -103,7 +103,7 @@ local function requestObject(url_down,sN,mode,sP)
         while have_url == false do
             if have_url == false and loops < 3 then
                 local cacheBuster = ("%x"):format(math.random(0, 2 ^ 30))
-                http.request({url = url_down.."?cb="..cacheBuster, headers = headers_tab})
+                http.request({url = url_down.."?cb="..cacheBuster.."?timestamp="..tostring(os.epoch), headers = headers_tab})
                 local requesting = true
             else
                 requesting = false
