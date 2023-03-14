@@ -99,14 +99,14 @@ local function requestObject(url_down,sN,sP)
                     break
                 end
             end
-            loops = loops + 1
-            if loops >= 2 then
-                local temp_sleep = loops / 10
-                if temp_sleep > 1 then
-                    temp_sleep = 1
-                end
-                sleep(temp_sleep)
+        end
+        loops = loops + 1
+        if loops >= 2 then
+            local temp_sleep = loops / 10
+            if temp_sleep > 1 then
+                temp_sleep = 1
             end
+            sleep(temp_sleep)
         end
     end
     return false
