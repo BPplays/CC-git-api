@@ -32,7 +32,7 @@ local function make_request(url_down,headers_tab)
         url = requested_url,
         headers = headers_tab
     })
-    return true
+    return true, requested_url
 end
 
 local function requestObject(url_down,sN,sP)
@@ -43,11 +43,13 @@ local function requestObject(url_down,sN,sP)
     }
     local have_url = false
     local loops = 1
+    local req_make = false
     -- http.request(url_down)
     local requesting = false
     while have_url == false do
         if have_url == false then
-            if make_request(url_down,headers_tab) then
+            req_make, requested_url = make_request(url_down,headers_tab)
+            if req_make then
                 requesting = true
             end
         end
