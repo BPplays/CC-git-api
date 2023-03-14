@@ -7,6 +7,7 @@
 
 
 local function requestObject(url_down,sN,sP)
+    local requested_url = url_down
     local headers_tab = {
         [ "User-Agent" ] = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36", -- Overrides the default User-Agent.
         [ "Cache-Control" ] = "no-cache, no-store", -- Tells the server not to return a cached version of the content.
@@ -17,10 +18,11 @@ local function requestObject(url_down,sN,sP)
     local requesting = true
     while have_url == false do
         if have_url == false and loops < 30 then
-            math.randomseed((os.epoch) + math.random(1,5546))
+            math.randomseed((os.epoch("utc")) + math.random(1,5546))
             local cacheBuster = ("%x"):format(math.random(0, 2 ^ 30))
+            requested_url = url_down .. "?cb=" .. cacheBuster .. "&timestamp=" .. tostring(os.epoch("utc"))
             http.request({
-                url = url_down .. "?cb=" .. cacheBuster .. "&timestamp=" .. tostring(os.epoch("utc")),
+                url = requested_url,
                 headers = headers_tab
             })
             local requesting = true
@@ -34,7 +36,7 @@ local function requestObject(url_down,sN,sP)
             -- local website = http.get(url)
             -- if website then
             if event == "http_success" then
-                if url == url_down then
+                if url == requested_url then
                     if fs.exists(sP) then
                         fs.makeDir(sP)
                     end
@@ -51,6 +53,11 @@ local function requestObject(url_down,sN,sP)
                     requesting = false
                     return true
                 else
+                    if loops >= 2 then
+                        print(requested_url)
+                        print("")
+                        print(url)
+                    end
                     have_url = false
                     requesting = false
                 end
