@@ -88,62 +88,68 @@ term.setCursorBlink( false )
 term.setCursorPos(1,1)
 end
 
-local function requestObject(url_down,sN,mode,sP)
-    if not url_down then error('Incorrect statement!') end
-    if not sN and mode == 'get' then error('Check mode!') end
-    if mode == 'get' then
-        local headers_tab = {
-            [ "User-Agent" ] = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36", -- Overrides the default User-Agent.
-            [ "Cache-Control" ] = "no-cache", -- Tells the server not to return a cached version of the content.
-        }
-        local have_url = false
-        local loops = 1
-        -- http.request(url_down)
-        local requesting = true
-        while have_url == false do
-            if have_url == false and loops < 3 then
-                local cacheBuster = ("%x"):format(math.random(0, 2 ^ 30))
-                http.request({url = url_down.."?cb="..cacheBuster.."?timestamp="..tostring(os.epoch), headers = headers_tab})
-                local requesting = true
-            else
-                requesting = false
-                break
-            end
-            while requesting do
-                local event, url, site_content = os.pullEvent()
-                
-                -- local website = http.get(url)
-                -- if website then
-                if event == "http_success" then
-                    -- if url == url_down then
-                        if fs.exists(sP) then
-                            fs.makeDir(sP)
-                        end
-                        local respondedText = site_content.readAll()
-                        -- local respondedText = website.readAll()
-                        local temp = io.open(sP.."/"..sN,'w')
-                        temp:write(respondedText)
-                        temp:flush()
-                        temp:close()
-                        site_content.close()
-                        have_url = true
-                        requesting = false
-                        return true
-                    -- else
-                        -- have_url = false
-                        -- requesting = false
-                    -- end
-                
-                elseif event == "http_failure" then
-                -- else
+local function requestObject(url_down,sN,sP)
+    local headers_tab = {
+        [ "User-Agent" ] = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36", -- Overrides the default User-Agent.
+        [ "Cache-Control" ] = "no-cache, no-store", -- Tells the server not to return a cached version of the content.
+    }
+    local have_url = false
+    local loops = 1
+    -- http.request(url_down)
+    local requesting = true
+    while have_url == false do
+        if have_url == false and loops < 30 then
+            math.randomseed((os.epoch) + math.random(1,5546))
+            local cacheBuster = ("%x"):format(math.random(0, 2 ^ 30))
+            http.request({
+                url = url_down .. "?cb=" .. cacheBuster .. "&timestamp=" .. tostring(os.epoch("utc")),
+                headers = headers_tab
+            })
+            local requesting = true
+        else
+            requesting = false
+            break
+        end
+        while requesting do
+            local event, url, site_content = os.pullEvent()
+            
+            -- local website = http.get(url)
+            -- if website then
+            if event == "http_success" then
+                if url == url_down then
+                    if fs.exists(sP) then
+                        fs.makeDir(sP)
+                    end
+                    local respondedText = site_content.readAll()
+                    -- local respondedText = website.readAll()
+                    local temp = io.open(sP.."/"..sN,'w')
+                    temp:write(respondedText)
+                    temp:flush()
+                    temp:close()
+                    site_content.close()
+                    respondedText = nil
+                    site_content = nil
+                    have_url = true
                     requesting = false
-                    return false
+                    return true
+                else
+                    have_url = false
+                    requesting = false
                 end
-            loops = loops + 1
-            if loops > 2 then
-                sleep(0)
+            
+            elseif event == "http_failure" then
+            -- else
+                have_url = false
+                requesting = false
+                return false
             end
+        loops = loops + 1
+        if loops >= 2 and loops < 5 then
+            local temp_sleep = loops / 10
+            if temp_sleep > 1 then
+                temp_sleep = 1
             end
+            sleep(temp_sleep)
         end
     end
 end
@@ -156,7 +162,7 @@ end
 local function get_internal(auth,reps,bran,paths,sN,save_path)
     if not auth or not reps or not bran or not paths or not sN then error('Attempt to compile nonexistent terms!') end
     math.randomseed(os.epoch())
-    statusCode = requestObject(compileURL(auth,reps,bran,paths),sN,'get',save_path)
+    statusCode = requestObject(compileURL(auth,reps,bran,paths),sN,save_path)
     return statusCode
 end
 
