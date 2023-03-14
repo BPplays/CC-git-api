@@ -5,6 +5,24 @@
 
 --Usage: git.get(author,repository,branch,path,saveName, save path), git.view(author,repository,branch,path)
 
+local function save_file(sN,sP,site_content)
+    if not fs.exists(sP) then
+        fs.makeDir(sP)
+    end
+    local respondedText = site_content.readAll()
+    -- local respondedText = website.readAll()
+    local temp = io.open(sP.."/"..sN,'w')
+    temp:write(respondedText)
+    temp:flush()
+    temp:close()
+    site_content.close()
+    respondedText = nil
+    site_content = nil
+    -- have_url = true
+    -- requesting = false
+    return true
+end
+
 
 local function requestObject(url_down,sN,sP)
     local requested_url = url_down
@@ -38,21 +56,10 @@ local function requestObject(url_down,sN,sP)
             -- if website then
             if event == "http_success" then
                 if url == requested_url then
-                    if fs.exists(sP) then
-                        fs.makeDir(sP)
+                    if save_file(sN,sP,site_content) then
+                        have_url = true
+                        requesting = false
                     end
-                    local respondedText = site_content.readAll()
-                    -- local respondedText = website.readAll()
-                    local temp = io.open(sP.."/"..sN,'w')
-                    temp:write(respondedText)
-                    temp:flush()
-                    temp:close()
-                    site_content.close()
-                    respondedText = nil
-                    site_content = nil
-                    have_url = true
-                    requesting = false
-                    return true
                 else
                     if loops >= 2 then
                         print(requested_url)
@@ -73,7 +80,6 @@ local function requestObject(url_down,sN,sP)
                 requesting = false
                 if loops > 15 then
                     break
-                    return false
                 end
             end
             loops = loops + 1
